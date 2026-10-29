@@ -1,0 +1,43 @@
+  services:
+    postgres:
+      container_name: postgres_HARY
+      image: postgres:15
+      environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        PGDATA: /data/postgres
+      volumes:
+        - postgres15:/data/postgres
+      ports:
+        - "22063:5432"
+      networks:
+        - postgres
+      restart: unless-stopped
+    
+    pgadmin:
+      container_name: pgadmin_HARY
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+        PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+        PGADMIN_CONFIG_SERVER_MODE: 'False'
+
+      logging:
+        driver: "none"
+
+      volumes:
+        - pgadmin:/var/lib/pgadmin
+
+      ports:
+        - "44063:80"
+      networks:
+        - postgres
+      restart: unless-stopped
+
+  networks:
+    postgres:
+      driver: bridge
+
+  volumes:
+      postgres15:
+      pgadmin:
